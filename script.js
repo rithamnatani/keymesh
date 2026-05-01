@@ -9,7 +9,9 @@ const exportProfileBtn = document.getElementById('export-profile-btn');
 const exportReadableProfileBtn = document.getElementById('export-readable-profile-btn');
 const profileImportInput = document.getElementById('profile-import-input');
 const fingerSummary = document.getElementById('finger-summary');
-const EXAMPLE_PROFILE_FILES = ['examples/fortnite-default.json', 'examples/fortnite-2.json'];
+const EXAMPLE_PROFILE_FILES = ['examples/fortnite-default.json', 'examples/fortnite-2.json', 'examples/valorant-default.json'];
+const EXAMPLE_SEED_VERSION_KEY = 'listExampleSeedVersion';
+const EXAMPLE_SEED_VERSION = 4;
 const PROFILES_KEY = 'listProfiles';
 const LEGACY_KEY = 'listData';
 const FINGERS = [
@@ -398,8 +400,18 @@ function createFreshDefaultStore() {
 async function loadProfileStore() {
     const saved = parseStoredJson(PROFILES_KEY);
     if (saved?.profiles?.length) {
-        const activeId = saved.profiles.some(p => p.id === saved.activeId) ? saved.activeId : saved.profiles[0].id;
-        return { activeId, profiles: saved.profiles };
+        const store = cloneSavedProfileStore(saved);
+        store.activeId = store.profiles.some(p => p.id === store.activeId) ? store.activeId : store.profiles[0].id;
+
+        const prevSeed = parseInt(localStorage.getItem(EXAMPLE_SEED_VERSION_KEY) || '0', 10);
+        if (prevSeed < EXAMPLE_SEED_VERSION) {
+            const merged = await mergeBundledExampleProfiles(store);
+            if (merged) {
+                localStorage.setItem(EXAMPLE_SEED_VERSION_KEY, String(EXAMPLE_SEED_VERSION));
+                localStorage.setItem(PROFILES_KEY, JSON.stringify(store));
+            }
+        }
+        return store;
     }
 
     const legacyNormalized = normalizeProfileData(parseStoredJson(LEGACY_KEY));
@@ -417,6 +429,7 @@ async function loadProfileStore() {
 
     const seeded = await seedExampleProfilesFromFiles();
     if (seeded) {
+        localStorage.setItem(EXAMPLE_SEED_VERSION_KEY, String(EXAMPLE_SEED_VERSION));
         localStorage.setItem(PROFILES_KEY, JSON.stringify(seeded));
         return seeded;
     }
@@ -427,18 +440,49 @@ async function loadProfileStore() {
     return store;
 }
 
-async function seedExampleProfilesFromFiles() {
+function cloneSavedProfileStore(saved) {
     try {
-        const responses = await Promise.all(EXAMPLE_PROFILE_FILES.map(path => fetch(path)));
+        return structuredClone(saved);
+    } catch {
+        return JSON.parse(JSON.stringify(saved));
+    }
+}
+
+async function fetchExamplePayloads() {
+    try {
+        const responses = await Promise.all(EXAMPLE_PROFILE_FILES.map(relPath => fetch(relPath)));
         if (!responses.every(response => response.ok)) return null;
-        const payloads = await Promise.all(responses.map(response => response.json()));
-        const profiles = payloads.map(payload =>
-            createProfile(payload.name?.trim() || 'Example', normalizeProfileData(payload.data))
-        );
-        return { activeId: profiles[0].id, profiles };
+        return await Promise.all(responses.map(response => response.json()));
     } catch {
         return null;
     }
+}
+
+function applyExamplePayloadToStore(store, payload) {
+    const name = payload.name?.trim() || 'Example';
+    const data = normalizeProfileData(payload.data);
+    const existing = store.profiles.find(p => p.name === name);
+    if (existing) {
+        existing.data = data;
+    } else {
+        store.profiles.push(createProfile(name, data));
+    }
+}
+
+async function mergeBundledExampleProfiles(store) {
+    const payloads = await fetchExamplePayloads();
+    if (!payloads) return false;
+    payloads.forEach(payload => applyExamplePayloadToStore(store, payload));
+    return true;
+}
+
+async function seedExampleProfilesFromFiles() {
+    const payloads = await fetchExamplePayloads();
+    if (!payloads) return null;
+    const profiles = payloads.map(payload =>
+        createProfile(payload.name?.trim() || 'Example', normalizeProfileData(payload.data))
+    );
+    return { activeId: profiles[0].id, profiles };
 }
 
 function parseStoredJson(key) {
