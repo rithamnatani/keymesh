@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connected Lists</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="profile-bar">
+        <select id="profile-select" aria-label="Profile"></select>
+        <button class="profile-btn" id="add-profile-btn" type="button">Add</button>
+        <button class="profile-btn" id="rename-profile-btn" type="button">Rename</button>
+        <button class="profile-btn" id="duplicate-profile-btn" type="button">Duplicate</button>
+        <button class="profile-btn" id="remove-profile-btn" type="button">Remove</button>
+        <div class="finger-summary" id="finger-summary" aria-label="Finger counts"></div>
+        <div class="profile-transfer">
+            <button class="profile-btn" id="import-profile-btn" type="button">Import</button>
+            <button class="profile-btn" id="export-profile-btn" type="button">Export</button>
+            <button class="profile-btn" id="export-readable-profile-btn" type="button">Export Text</button>
+            <input id="profile-import-input" type="file" accept="application/json,text/plain,.json,.txt,.map" hidden>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <div class="column" id="left-column">
+            <h2>Left List</h2>
+            <input type="text" class="item-input" placeholder="Add to left..." data-side="left">
+            <ul class="item-list" id="list-left"></ul>
+        </div>
+
+        <div class="connector-container">
+            <svg id="connector-svg"></svg>
+        </div>
+
+        <div class="column" id="right-column">
+            <h2>Right List</h2>
+            <input type="text" class="item-input" placeholder="Add to right..." data-side="right">
+            <ul class="item-list" id="list-right"></ul>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
