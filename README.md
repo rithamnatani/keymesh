@@ -26,10 +26,10 @@ Use any static server so `fetch` can load `examples/*.json` (opening the file di
 
 ```bash
 bun install
-bun --serve .
+bun run serve
 ```
 
-Then open the URL it prints (often `http://localhost:3000`).
+Then open [http://127.0.0.1:3000/](http://127.0.0.1:3000/) (set `PORT` to use another port).
 
 ## Regenerate README images
 
