@@ -20,8 +20,7 @@ const outDir = path.join(root, "docs");
 const README_SCREENSHOTS = [
     { label: "Fortnite Default WASD", file: "readme-fortnite-default-wasd.png" },
     { label: "Fortnite Improved WASD", file: "readme-fortnite-improved-wasd.png" },
-    { label: "Valorant Default WASD", file: "readme-valorant-default-wasd.png" },
-    { label: "Valorant Improved WASD", file: "readme-valorant-improved-wasd.png" },
+    { label: "Fortnite Xtreme UI89", file: "readme-fortnite-xtreme-ui89.png" },
 ];
 
 function resolvedPublicFile(pathname) {

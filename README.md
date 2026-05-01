@@ -12,10 +12,6 @@ Map keys to actions, tag fingers, and draw connections between them—handy for 
 
 ![Fortnite Improved WASD](docs/readme-fortnite-improved-wasd.png)
 
-### Valorant Default WASD
+### Fortnite Xtreme UI89
 
-![Valorant Default WASD](docs/readme-valorant-default-wasd.png)
-
-### Valorant Improved WASD
-
-![Valorant Improved WASD](docs/readme-valorant-improved-wasd.png)
+![Fortnite Xtreme UI89](docs/readme-fortnite-xtreme-ui89.png)
