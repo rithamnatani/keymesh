@@ -1,6 +1,6 @@
 # Connected Lists
 
-Map keys to actions, tag fingers, and draw connections between them—handy for visualizing game binds and layouts.
+Map keys to actions, tag fingers, and draw connections between them—handy for visualizing game binds and layouts. Columns are **Keys** (left) and **Binds** (right).
 
 **Live:** [rithamnatani.github.io/list](https://rithamnatani.github.io/list/)
 
