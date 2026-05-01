@@ -1,5 +1,5 @@
 {
-  "name": "connected-lists",
+  "name": "keymesh",
   "private": true,
   "scripts": {
     "serve": "bun run scripts/static-server.ts",
