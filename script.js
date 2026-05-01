@@ -78,6 +78,7 @@ function addItem(text, side, id, finger = '') {
         ${side === 'right' ? '<span class="related-actions"></span>' : ''}
         ${side === 'left' ? createFingerSelectHtml(finger) : ''}
         <button class="btn edit-btn" type="button">✎</button><button class="btn delete-btn" type="button">&times;</button>`;
+    li.dataset.fullText = text;
     li.querySelector('.item-text').textContent = text;
     if (side === 'left' && finger) li.dataset.finger = finger;
     const fingerSelect = li.querySelector('.finger-select');
@@ -99,8 +100,16 @@ function addItem(text, side, id, finger = '') {
 }
 
 function editItem(span) {
-    const newText = prompt('Edit item:', span.textContent);
-    if (newText && newText.trim()) { span.textContent = newText.trim(); saveData(); updateUI(); }
+    const li = span.closest('.list-item');
+    const previous = li?.dataset.fullText ?? span.textContent;
+    const newText = prompt('Edit item:', previous);
+    if (newText && newText.trim()) {
+        const trimmed = newText.trim();
+        if (li) li.dataset.fullText = trimmed;
+        span.textContent = trimmed;
+        saveData();
+        updateUI();
+    }
 }
 
 function startReorder(e, li) {
@@ -169,12 +178,13 @@ window.onpointerup = (e) => {
     }
 };
 
-function updateUI() { 
+function updateUI() {
     connections = connections.filter(c => document.getElementById(c.from) && document.getElementById(c.to));
     applyFingerStyles();
-    renderRelatedActions();
     renderFingerSummary();
-    draw(); 
+    fitRightActionLabelsToPage();
+    renderRelatedActions();
+    draw();
 }
 
 function applyFingerStyles() {
@@ -312,16 +322,66 @@ function saveData() {
     saveProfiles();
 }
 
+function getStoredItemText(li) {
+    return li.dataset.fullText ?? li.querySelector('.item-text')?.textContent ?? '';
+}
+
 function getCurrentData() {
     return {
         left: [...document.getElementById('list-left').children].map(li => ({
             id: li.id,
-            text: li.querySelector('.item-text').textContent,
+            text: getStoredItemText(li),
             finger: li.querySelector('.finger-select')?.value || ''
         })),
-        right: [...document.getElementById('list-right').children].map(li => ({ id: li.id, text: li.querySelector('.item-text').textContent })),
+        right: [...document.getElementById('list-right').children].map(li => ({
+            id: li.id,
+            text: getStoredItemText(li)
+        })),
         connections
     };
+}
+
+function countWords(text) {
+    const trimmed = text.trim();
+    if (!trimmed) return 0;
+    return trimmed.split(/\s+/).length;
+}
+
+function stripFirstWord(text) {
+    const parts = text.trim().split(/\s+/).filter(Boolean);
+    if (parts.length <= 1) return text.trim();
+    return parts.slice(1).join(' ');
+}
+
+function pageOverflowsHorizontally() {
+    const doc = document.documentElement;
+    return doc.scrollWidth > doc.clientWidth + 2;
+}
+
+function fitRightActionLabelsToPage() {
+    const items = [...document.querySelectorAll('#list-right .list-item')];
+    if (!items.length) return;
+
+    for (const li of items) {
+        const span = li.querySelector('.item-text');
+        if (!span) continue;
+        const full = li.dataset.fullText ?? span.textContent;
+        li.dataset.fullText = full;
+        span.textContent = full;
+    }
+
+    let guard = 0;
+    while (guard++ < 512 && pageOverflowsHorizontally()) {
+        const spans = items.map(li => li.querySelector('.item-text')).filter(Boolean);
+        const displays = spans.map(span => span.textContent);
+        const counts = displays.map(countWords);
+        const maxWords = Math.max(0, ...counts);
+        if (maxWords <= 1) break;
+        const idx = counts.indexOf(maxWords);
+        const next = stripFirstWord(displays[idx]);
+        if (next === displays[idx]) break;
+        spans[idx].textContent = next;
+    }
 }
 
 async function initProfiles() {
@@ -683,5 +743,9 @@ function nextProfileName(base) {
     return name;
 }
 
-window.addEventListener('resize', draw);
+window.addEventListener('resize', () => {
+    fitRightActionLabelsToPage();
+    renderRelatedActions();
+    draw();
+});
 window.addEventListener('scroll', draw, { passive: true });

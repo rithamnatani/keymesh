@@ -3,11 +3,9 @@
   "private": true,
   "scripts": {
     "serve": "bun run scripts/static-server.ts",
-    "readme-previews": "bun run scripts/generate-readme-previews.ts",
-    "screenshots": "bun run scripts/capture-readme-screenshots.ts"
+    "screenshots": "node scripts/capture-readme-screenshots.mjs"
   },
   "devDependencies": {
-    "playwright": "^1.52.0",
-    "sharp": "^0.34.5"
+    "playwright": "^1.52.0"
   }
 }
