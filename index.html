@@ -4,15 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connected Lists</title>
-    <link rel="stylesheet" href="style.css?v=9">
+    <link rel="stylesheet" href="style.css?v=10">
 </head>
 <body>
     <div class="profile-bar">
-        <select id="profile-select" aria-label="Profile"></select>
-        <button class="profile-btn" id="add-profile-btn" type="button">Add</button>
-        <button class="profile-btn" id="rename-profile-btn" type="button">Rename</button>
-        <button class="profile-btn" id="duplicate-profile-btn" type="button">Duplicate</button>
-        <button class="profile-btn" id="remove-profile-btn" type="button">Remove</button>
+        <div class="profile-bar-start">
+            <select id="profile-select" aria-label="Profile"></select>
+            <button class="profile-btn" id="add-profile-btn" type="button">Add</button>
+            <button class="profile-btn" id="rename-profile-btn" type="button">Rename</button>
+            <button class="profile-btn" id="duplicate-profile-btn" type="button">Duplicate</button>
+            <button class="profile-btn" id="remove-profile-btn" type="button">Remove</button>
+        </div>
         <div class="finger-summary" id="finger-summary" aria-label="Finger counts"></div>
         <div class="profile-transfer">
             <button class="profile-btn" id="import-profile-btn" type="button">Import</button>
@@ -39,6 +41,6 @@
             <ul class="item-list" id="list-right"></ul>
         </div>
     </div>
-    <script src="script.js?v=9"></script>
+    <script src="script.js?v=10"></script>
 </body>
 </html>

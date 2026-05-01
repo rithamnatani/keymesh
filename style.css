@@ -36,13 +36,21 @@ body {
     z-index: 20;
     display: flex;
     align-items: center;
-    gap: 8px;
     flex-wrap: wrap;
+    gap: 8px 12px;
     padding: 10px 16px;
     min-height: 55px;
     border-bottom: 1px solid color-mix(in srgb, var(--surface1) 70%, transparent);
     background-color: color-mix(in srgb, var(--base) 94%, black);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+}
+
+.profile-bar-start {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex: 0 0 auto;
 }
 
 #profile-select,
@@ -73,13 +81,12 @@ body {
 }
 
 .finger-summary {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    flex: 1 1 12rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    flex-wrap: wrap;
+    gap: clamp(4px, 1vw, 6px);
     min-width: 0;
 }
 
@@ -87,7 +94,7 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-left: auto;
+    flex: 0 0 auto;
 }
 
 .finger-count {
@@ -95,22 +102,21 @@ body {
     border-radius: 6px;
     background-color: color-mix(in srgb, var(--finger-color) 24%, transparent);
     color: var(--text);
-    padding: 6px 8px;
-    font-size: 13px;
+    padding: clamp(4px, 1vw, 6px) clamp(5px, 1.2vw, 8px);
+    font-size: clamp(11px, 2.2vw, 13px);
     line-height: 1;
     white-space: nowrap;
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 10.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 @media (max-width: 1020px) {
     .finger-summary {
-        position: static;
-        transform: none;
         flex: 1 1 100%;
-        order: 2;
-    }
-
-    .profile-transfer {
-        order: 1;
+        justify-content: center;
     }
 }
 
