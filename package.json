@@ -1,0 +1,12 @@
+{
+  "name": "connected-lists",
+  "private": true,
+  "scripts": {
+    "readme-previews": "bun run scripts/generate-readme-previews.ts",
+    "screenshots": "bun run scripts/capture-readme-screenshots.ts"
+  },
+  "devDependencies": {
+    "playwright": "^1.52.0",
+    "sharp": "^0.34.5"
+  }
+}
