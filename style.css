@@ -270,16 +270,21 @@ h2 { color: var(--lavender); text-align: center; margin-top: 0; }
 .anchor-right { left: -24px; }
 
 .connector-container {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
     pointer-events: none;
     z-index: 1;
+    overflow: visible;
 }
 
-#connector-svg { width: 100%; height: 100%; }
+#connector-svg {
+    display: block;
+    overflow: visible;
+}
 
 .connection-line {
     stroke: var(--sapphire);

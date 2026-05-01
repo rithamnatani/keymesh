@@ -277,15 +277,49 @@ function renderRelatedActions() {
 function draw() {
     const svg = document.getElementById('connector-svg');
     svg.innerHTML = '';
+    sizeConnectorSvgToApp();
     connections.forEach(c => svg.appendChild(createLine(getPos(c.from), getPos(c.to), false, c)));
-    if (connDrag) svg.appendChild(createLine(getPos(connDrag.startId), { x: connDrag.x, y: connDrag.y }, true));
+    if (connDrag) {
+        svg.appendChild(createLine(getPos(connDrag.startId), clientPointToAppCoords(connDrag.x, connDrag.y), true));
+    }
+}
+
+function appLayoutRoot() {
+    return document.querySelector('.app-container');
+}
+
+function sizeConnectorSvgToApp() {
+    const root = appLayoutRoot();
+    const svg = document.getElementById('connector-svg');
+    if (!root || !svg) return;
+    const w = root.scrollWidth;
+    const h = root.scrollHeight;
+    svg.setAttribute('width', String(w));
+    svg.setAttribute('height', String(h));
 }
 
 function getPos(id) {
     const el = document.getElementById(id);
-    if (!el) return { x: 0, y: 0 };
-    const rect = el.querySelector('.anchor').getBoundingClientRect();
-    return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+    const root = appLayoutRoot();
+    if (!el || !root) return { x: 0, y: 0 };
+    const anchor = el.querySelector('.anchor');
+    if (!anchor) return { x: 0, y: 0 };
+    const ar = anchor.getBoundingClientRect();
+    const rr = root.getBoundingClientRect();
+    return {
+        x: ar.left + ar.width / 2 - rr.left + root.scrollLeft,
+        y: ar.top + ar.height / 2 - rr.top + root.scrollTop
+    };
+}
+
+function clientPointToAppCoords(clientX, clientY) {
+    const root = appLayoutRoot();
+    if (!root) return { x: clientX, y: clientY };
+    const rr = root.getBoundingClientRect();
+    return {
+        x: clientX - rr.left + root.scrollLeft,
+        y: clientY - rr.top + root.scrollTop
+    };
 }
 
 function createLine(p1, p2, temp = false, connection = null) {

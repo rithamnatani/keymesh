@@ -136,7 +136,12 @@ try {
 
     for (const { label, file } of README_SCREENSHOTS) {
         await page.selectOption("#profile-select", { label });
-        await new Promise((r) => setTimeout(r, 900));
+        await page.evaluate(() => window.scrollTo(0, 0));
+        await new Promise((r) => setTimeout(r, 400));
+        await page.evaluate(() => {
+            window.dispatchEvent(new Event("resize"));
+        });
+        await new Promise((r) => setTimeout(r, 400));
         const outPath = path.join(outDir, file);
         await page.screenshot({
             path: outPath,
