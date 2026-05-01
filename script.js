@@ -9,6 +9,7 @@ const exportProfileBtn = document.getElementById('export-profile-btn');
 const exportReadableProfileBtn = document.getElementById('export-readable-profile-btn');
 const profileImportInput = document.getElementById('profile-import-input');
 const fingerSummary = document.getElementById('finger-summary');
+const EXAMPLE_PROFILE_FILES = ['examples/fortnite-default.json', 'examples/fortnite-2.json'];
 const PROFILES_KEY = 'listProfiles';
 const LEGACY_KEY = 'listData';
 const FINGERS = [
@@ -30,7 +31,13 @@ const FINGER_CODES = {
 let dragInfo = null, connDrag = null, connections = [];
 let profileStore = { activeId: '', profiles: [] };
 
-window.addEventListener('DOMContentLoaded', initProfiles);
+window.addEventListener('DOMContentLoaded', () => {
+    initProfiles().catch(() => {
+        profileStore = createFreshDefaultStore();
+        renderProfileSelect();
+        loadProfile(getActiveProfile());
+    });
+});
 inputs.forEach(input => {
     input.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && input.value.trim() !== '') {
@@ -317,24 +324,61 @@ function getCurrentData() {
     };
 }
 
-function initProfiles() {
-    profileStore = loadProfileStore();
+async function initProfiles() {
+    profileStore = await loadProfileStore();
     renderProfileSelect();
     loadProfile(getActiveProfile());
 }
 
-function loadProfileStore() {
+function createFreshDefaultStore() {
+    const firstProfile = createProfile('Default', normalizeProfileData(null));
+    return { activeId: firstProfile.id, profiles: [firstProfile] };
+}
+
+async function loadProfileStore() {
     const saved = parseStoredJson(PROFILES_KEY);
     if (saved?.profiles?.length) {
         const activeId = saved.profiles.some(p => p.id === saved.activeId) ? saved.activeId : saved.profiles[0].id;
         return { activeId, profiles: saved.profiles };
     }
 
-    const legacyData = parseStoredJson(LEGACY_KEY);
-    const firstProfile = createProfile('Default', normalizeProfileData(legacyData));
+    const legacyNormalized = normalizeProfileData(parseStoredJson(LEGACY_KEY));
+    const hasLegacyItems =
+        legacyNormalized.left.length ||
+        legacyNormalized.right.length ||
+        legacyNormalized.connections.length;
+
+    if (hasLegacyItems) {
+        const firstProfile = createProfile('Default', legacyNormalized);
+        const store = { activeId: firstProfile.id, profiles: [firstProfile] };
+        localStorage.setItem(PROFILES_KEY, JSON.stringify(store));
+        return store;
+    }
+
+    const seeded = await seedExampleProfilesFromFiles();
+    if (seeded) {
+        localStorage.setItem(PROFILES_KEY, JSON.stringify(seeded));
+        return seeded;
+    }
+
+    const firstProfile = createProfile('Default', legacyNormalized);
     const store = { activeId: firstProfile.id, profiles: [firstProfile] };
     localStorage.setItem(PROFILES_KEY, JSON.stringify(store));
     return store;
+}
+
+async function seedExampleProfilesFromFiles() {
+    try {
+        const responses = await Promise.all(EXAMPLE_PROFILE_FILES.map(path => fetch(path)));
+        if (!responses.every(response => response.ok)) return null;
+        const payloads = await Promise.all(responses.map(response => response.json()));
+        const profiles = payloads.map(payload =>
+            createProfile(payload.name?.trim() || 'Example', normalizeProfileData(payload.data))
+        );
+        return { activeId: profiles[0].id, profiles };
+    } catch {
+        return null;
+    }
 }
 
 function parseStoredJson(key) {
