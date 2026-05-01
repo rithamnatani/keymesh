@@ -56,28 +56,54 @@ body {
 #profile-select,
 .profile-btn,
 .finger-select {
-    height: 34px;
+    box-sizing: border-box;
+    margin: 0;
     border: 1px solid var(--surface1);
     border-radius: 6px;
     background-color: var(--surface0);
     color: var(--text);
-    font: inherit;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1;
+    vertical-align: middle;
 }
 
 #profile-select {
     min-width: 170px;
+    height: 34px;
     padding: 0 28px 0 10px;
+    display: flex;
+    align-items: center;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='none' stroke='%23cdd6f4' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round' d='M3 4.5l3 3 3-3'/%3E%3C/svg%3E");
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 12px 12px;
 }
 
 .profile-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
     padding: 0 10px;
     cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 .profile-btn:hover,
 #profile-select:hover,
 .finger-select:hover {
     border-color: var(--sapphire);
+}
+
+.profile-btn:focus-visible,
+#profile-select:focus-visible,
+.finger-select:focus-visible {
+    outline: 2px solid var(--sapphire);
+    outline-offset: 2px;
 }
 
 .finger-summary {
@@ -102,7 +128,10 @@ body {
     border-radius: 6px;
     background-color: color-mix(in srgb, var(--finger-color) 24%, transparent);
     color: var(--text);
-    padding: clamp(4px, 1vw, 6px) clamp(5px, 1.2vw, 8px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 8px;
     font-size: clamp(11px, 2.2vw, 13px);
     line-height: 1;
     white-space: nowrap;
@@ -148,7 +177,12 @@ body {
     width: 484px;
 }
 
-h2 { color: var(--lavender); text-align: center; margin-top: 0; }
+h2 {
+    color: var(--lavender);
+    text-align: center;
+    margin-top: 0;
+    line-height: 1.25;
+}
 
 .item-input {
     width: 100%;
@@ -160,6 +194,7 @@ h2 { color: var(--lavender); text-align: center; margin-top: 0; }
     margin-bottom: 20px;
     outline: none;
     font-size: 16px;
+    line-height: 1.25;
 }
 
 .item-list {
@@ -216,7 +251,7 @@ h2 { color: var(--lavender); text-align: center; margin-top: 0; }
 .item-text {
     flex: 0 1 auto;
     min-width: 0;
-    line-height: 20px;
+    line-height: 1.25;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -227,7 +262,7 @@ h2 { color: var(--lavender); text-align: center; margin-top: 0; }
     flex: 1 1 auto;
     min-width: 0;
     color: color-mix(in srgb, var(--text) 48%, transparent);
-    line-height: 20px;
+    line-height: 1.25;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -243,8 +278,13 @@ h2 { color: var(--lavender); text-align: center; margin-top: 0; }
     border: none;
     cursor: pointer;
     font-size: 18px;
-    line-height: 20px;
-    padding: 2px 5px;
+    line-height: 1;
+    padding: 0 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    min-height: 28px;
 }
 
 .edit-btn { color: var(--yellow); }
@@ -266,9 +306,16 @@ h2 { color: var(--lavender); text-align: center; margin-top: 0; }
 .finger-select {
     width: 92px;
     height: 28px;
-    padding: 0 6px;
-    font-size: 13px;
+    padding: 0 22px 0 6px;
+    display: flex;
+    align-items: center;
     cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='none' stroke='%23cdd6f4' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round' d='M3 4.5l3 3 3-3'/%3E%3C/svg%3E");
+    background-position: right 6px center;
+    background-repeat: no-repeat;
+    background-size: 10px 10px;
 }
 
 /* Inner Edges: Right side of left list, Left side of right list */
