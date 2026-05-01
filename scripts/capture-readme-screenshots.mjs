@@ -5,8 +5,6 @@
  *   npm install
  *   npx playwright install chromium
  *   npm run screenshots
- *
- * If bundled Chromium fails on Windows, install Microsoft Edge or Chrome — this script tries channel: msedge / chrome automatically.
  */
 import http from "node:http";
 import fs from "node:fs/promises";
@@ -17,6 +15,14 @@ import { chromium } from "playwright";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const outDir = path.join(root, "docs");
+
+/** Profile names as shown in the dropdown; order matches README. */
+const README_SCREENSHOTS = [
+    { label: "Fortnite Default WASD", file: "readme-fortnite-default-wasd.png" },
+    { label: "Fortnite Improved WASD", file: "readme-fortnite-improved-wasd.png" },
+    { label: "Valorant Default WASD", file: "readme-valorant-default-wasd.png" },
+    { label: "Valorant Improved WASD", file: "readme-valorant-improved-wasd.png" },
+];
 
 function resolvedPublicFile(pathname) {
     const tail = pathname === "/" || pathname === "" ? "index.html" : pathname.replace(/^\/+/, "");
@@ -120,29 +126,27 @@ try {
     await page.evaluate(() => localStorage.clear());
     await page.goto(`${base}/`, { waitUntil: "networkidle" });
 
-    await page.waitForFunction(() => {
-        const select = document.querySelector("#profile-select");
-        return select instanceof HTMLSelectElement && select.options.length >= 2;
-    });
+    const minPresets = 5;
+    await page.waitForFunction(
+        (n) => {
+            const select = document.querySelector("#profile-select");
+            return select instanceof HTMLSelectElement && select.options.length >= n;
+        },
+        minPresets,
+    );
 
-    await page.selectOption("#profile-select", { index: 0 });
-    await new Promise((r) => setTimeout(r, 800));
-    await page.screenshot({
-        path: path.join(outDir, "readme-fortnite-default.png"),
-        fullPage: true,
-    });
-
-    await page.selectOption("#profile-select", { index: 1 });
-    await new Promise((r) => setTimeout(r, 800));
-    await page.screenshot({
-        path: path.join(outDir, "readme-fortnite-2.png"),
-        fullPage: true,
-    });
+    for (const { label, file } of README_SCREENSHOTS) {
+        await page.selectOption("#profile-select", { label });
+        await new Promise((r) => setTimeout(r, 900));
+        const outPath = path.join(outDir, file);
+        await page.screenshot({
+            path: outPath,
+            fullPage: true,
+        });
+        console.log(`Wrote ${outPath}`);
+    }
 
     await browser.close();
-
-    console.log(`Wrote ${path.join(outDir, "readme-fortnite-default.png")}`);
-    console.log(`Wrote ${path.join(outDir, "readme-fortnite-2.png")}`);
 } finally {
     server.close();
 }

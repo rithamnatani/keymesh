@@ -9,9 +9,15 @@ const exportProfileBtn = document.getElementById('export-profile-btn');
 const exportReadableProfileBtn = document.getElementById('export-readable-profile-btn');
 const profileImportInput = document.getElementById('profile-import-input');
 const fingerSummary = document.getElementById('finger-summary');
-const EXAMPLE_PROFILE_FILES = ['examples/fortnite-default.json', 'examples/fortnite-2.json', 'examples/valorant-default.json'];
+const EXAMPLE_PROFILE_FILES = [
+    'examples/fortnite-default-wasd.json',
+    'examples/fortnite-improved-wasd.json',
+    'examples/valorant-default-wasd.json',
+    'examples/valorant-improved-wasd.json',
+    'examples/fortnite-xtreme-ui89.json'
+];
 const EXAMPLE_SEED_VERSION_KEY = 'listExampleSeedVersion';
-const EXAMPLE_SEED_VERSION = 5;
+const EXAMPLE_SEED_VERSION = 6;
 const PROFILES_KEY = 'listProfiles';
 const LEGACY_KEY = 'listData';
 const FINGERS = [

@@ -4,6 +4,18 @@ Map keys to actions, tag fingers, and draw connections between them—handy for 
 
 **Live:** [rithamnatani.github.io/list](https://rithamnatani.github.io/list/)
 
-![Fortnite example](docs/readme-fortnite-default.png)
+### Fortnite Default WASD
 
-![Fortnite 2 example](docs/readme-fortnite-2.png)
+![Fortnite Default WASD](docs/readme-fortnite-default-wasd.png)
+
+### Fortnite Improved WASD
+
+![Fortnite Improved WASD](docs/readme-fortnite-improved-wasd.png)
+
+### Valorant Default WASD
+
+![Valorant Default WASD](docs/readme-valorant-default-wasd.png)
+
+### Valorant Improved WASD
+
+![Valorant Improved WASD](docs/readme-valorant-improved-wasd.png)
